@@ -1,0 +1,71 @@
+﻿[命名原則]
+Card = 單一卡牌
+Point = 點數
+Suit = 花色
+Rank = 牌型排名
+Type = 牌型
+Ch = 中文
+En = 英文
+
+=RankTable7CF = Rank Table 7 Cards Flush (七張牌_同花排名表)=
+=RankTable7CNF = Rank Table 7 Cards Not Flush (七張牌_非同花排名表)=
+Type7: 		七張牌組合的牌型
+Rank:		牌型排名(五張牌組合)
+Type5Ch:	五張牌組合的牌型(中文名稱)
+Type5En:	五張牌組合的牌型(英文名稱)
+CardPoint: 	做為結果的五張牌的點數
+(程式產生)
+*SelectCards:	從七張牌指定做為結果的五張牌, 回傳五張牌的編號.
+
+=CardNameTable (卡牌的命名表)=
+ID(用作key值):	卡牌的編號(唯一)
+NameCh:		卡牌的中文顯示名稱1 (10點以T表示)
+NameCh2:	卡牌的中文顯示名稱2 (10點以10表示)
+NameEn:		卡牌的英文顯示名稱
+NameCode:	卡牌的編碼 (EX: 3c = 點數3 & 梅花)
+Suit:		卡牌的花色編號 (0=無花色, 1=梅花, 2=磚塊, 3=愛心, 4=黑桃)
+SuitCh:		卡牌的花色中文名稱
+SuitEn:		卡牌的花色英文名稱
+SuitCode:	卡牌的花色編碼 (c=梅花, d=磚塊, h=愛心, s=黑桃)
+Point:		卡牌的點數
+PointEn:	卡牌的點數英文名稱
+PointCode:	卡牌的編碼1 (10點以T表示)
+PointCode2:	卡牌的編碼2 (10點以10表示)
+
+=Type5=
+同花	Flush
+同花順	Straight Flush
+順子	Straight
+五張	Five of a Kind
+鐵支	Four of a Kind
+葫蘆	Full House
+三條	Three of a Kind
+二對	Two Pairs (不叫兩對)
+一對	One Pair
+高牌	High card
+
+=Type7=
+七同花順	SF7
+六同花順	SF6
+五同花順	SF5
+七同花		F7
+六同花		F6
+五同花		F5
+七順子		S7
+六順子		S6
+五順子		S5
+點數7		P7
+點數61		P61
+點數52		P52
+點數511		P511
+點數43		P43
+點數421		P421
+點數4111	P4111
+點數331		P331
+點數322		P322
+點數3211	P3211
+點數31111	P31111
+點數2221	P2221
+點數22111	P22111
+點數211111	P211111
+點數1111111	P1111111

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Express App Example</title>
+  <style>
+    button {
+      height: 70px;
+      width: 150px;
+      /* color: red; */
+      font-family: Microsoft JhengHei;  /* 標楷體:DFKai-sb; 微軟正黑:Microsoft JhengHei;*/
+      font-size: 15px;
+    }
+    #select {
+      color: rgb(255, 0, 0);
+      font-weight: bold;
+    }
+
+    #fold {
+      color: blue;
+      font-weight: bold;
+    }
+    #allin {
+      color: rgb(255, 102, 0);
+      font-weight: bold;
+    }
+    #call {
+      color: rgba(0, 255, 0, 0.603);
+      font-weight: bold;
+    }
+    #start {
+      color: rgba(0, 255, 255, 0.603);
+      font-weight: bold;
+    }
+    #Raise {
+      color: rgba(255, 0, 234, 0.603);
+      font-weight: bold;
+    }
+    #leave {
+      color: rgb(165, 0, 96);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Express App Example</h1>
+  <button onclick="inDesk()">入桌</button>
+  <br>
+  <br>
+  <button onclick="selectSeat(0)" id="select">選擇座位(0) aa[0]</button> 
+  <button onclick="selectSeat(1)" id="select">選擇座位(1) aa[1]</button> 
+  <button onclick="selectSeat(2)" id="select">選擇座位(2) aa[2]</button> 
+  <button onclick="selectSeat(3)" id="select">選擇座位(3) aa[3]</button> 
+  <button onclick="selectSeat(4)" id="select">選擇座位(4) aa[4]</button>
+  <br>
+  <br>
+  <button onclick="buttonFold(0)" id="fold">棄牌aa[0]</button> 
+  <button onclick="buttonFold(1)" id="fold">棄牌aa[1]</button> 
+  <button onclick="buttonFold(2)" id="fold">棄牌aa[2]</button> 
+  <button onclick="buttonFold(3)" id="fold">棄牌aa[3]</button> 
+  <button onclick="buttonFold(4)" id="fold">棄牌aa[4]</button>
+  <br>
+  <br>
+  <button onclick="buttonAllin(0)" id="allin">梭哈aa[0]</button> 
+  <button onclick="buttonAllin(1)" id="allin">梭哈aa[1]</button> 
+  <button onclick="buttonAllin(2)" id="allin">梭哈aa[2]</button> 
+  <button onclick="buttonAllin(3)" id="allin">梭哈aa[3]</button> 
+  <button onclick="buttonAllin(4)" id="allin">梭哈aa[4]</button>
+  <br>
+  <br>
+  <button onclick="buttonCall(0)" id="call">跟注aa[0]</button> 
+  <button onclick="buttonCall(1)" id="call">跟注aa[1]</button> 
+  <button onclick="buttonCall(2)" id="call">跟注aa[2]</button> 
+  <button onclick="buttonCall(3)" id="call">跟注aa[3]</button> 
+  <button onclick="buttonCall(4)" id="call">跟注aa[4]</button>
+  <br>
+  <br>
+  raiseMoney: <input type="number" name="fname" id='raiseMoney'><br>
+  <button onclick="buttonRaise(0)" id="Raise">加注aa[0]</button> 
+  <button onclick="buttonRaise(1)" id="Raise">加注aa[1]</button> 
+  <button onclick="buttonRaise(2)" id="Raise">加注aa[2]</button> 
+  <button onclick="buttonRaise(3)" id="Raise">加注aa[3]</button> 
+  <button onclick="buttonRaise(4)" id="Raise">加注aa[4]</button>
+  <br>
+  <br>
+  <button onclick="buttonPass(0)" id="pass">Pass aa[0]</button> 
+  <button onclick="buttonPass(1)" id="pass">Pass aa[1]</button> 
+  <button onclick="buttonPass(2)" id="pass">Pass aa[2]</button> 
+  <button onclick="buttonPass(3)" id="pass">Pass aa[3]</button> 
+  <button onclick="buttonPass(4)" id="pass">Pass aa[4]</button> 
+  <br>
+  <br>
+  <button onclick="gameStart()" id="start">開始遊戲 & 觸發倒數</button> 
+  <br>
+  <br>
+  <button onclick="openTable()">開桌</button>
+  <br>
+  <br>
+  <button onclick="getAllDeskList()">取得所有牌桌列表</button>
+  <br>
+  <br>
+  <button onclick="buttonLeaveSeat(0)" id="leave">離開座位 aa[0]</button> 
+  <button onclick="buttonLeaveSeat(1)" id="leave">離開座位 aa[1]</button> 
+  <button onclick="buttonLeaveSeat(2)" id="leave">離開座位 aa[2]</button> 
+  <button onclick="buttonLeaveSeat(3)" id="leave">離開座位 aa[3]</button> 
+  <button onclick="buttonLeaveSeat(4)" id="leave">離開座位 aa[4]</button>
+  <br>
+  <br>
+  <script src="./clusterws.min.js"></script>
+  <script>
+    // 參數設定
+    const tn = 'NN56';
+    const ses = '56';
+    // const url = 'ws://192.168.10.241:3100';  //?
+    // const url = 'ws://192.168.10.106:3100';  //K
+    // const url = 'ws://192.168.10.9:3100';  //B
+    const url = 'ws://localhost:3100';
+    // const url = 'ws://192.168.10.105';
+    const aa = [90366,97699,9756,94371,91835,91607,91474]
+    // const aa = [1,2,17,999999,70233,222222,333333]
+// ---  入桌  -------------------------------------------------------
+    function inDesk(){
+      let socket = new ClusterWS({
+          // url: 'ws://localhost:3100'
+          url: url
+        });
+      socket.on('connect', () => {
+        for(let i = 0; i < aa.length; i++){
+          console.log('send');
+          socket.send('gameIntoRoom', {protocol: 1,  data:{
+            playerID: aa[i],
+            playertable: tn,
+            playerNickeName: 'test'+aa[i],
+            playChannelName: tn,
+            session: ses
+          }});
+        // const channel = socket.subscribe("privateChannel"+aa[i]);
+        // channel.watch((message) => {
+        //   console.log(message);
+        // })
+        }  
+      })
+    }
+// ---  選座位  -------------------------------------------------------
+    function selectSeat(i){
+      let socket = new ClusterWS({
+        url: url
+      });
+      socket.on('connect', () => {
+        console.log('Socket connected');
+        socket.send('gameSelectSeat', {protocol: 2,  data:{
+          playerID: aa[i],
+          position: i,
+          point: 66666,
+          playChannelName: tn
+        }});
+        const channel = socket.subscribe("publicChannel"+tn);
+        channel.watch((message) => {
+          console.log('publicChannel[' + aa[i] + ']', message);
+        })
+        const privateChannel = socket.subscribe('privateChannel'+aa[i])
+        privateChannel.watch((message) => {
+          console.log('privateChannel[' + aa[i] + ']',message);
+        })
+      })
+    }
+// ---  棄牌  -------------------------------------------------------
+    function buttonFold(i){
+
+      let socket = new ClusterWS({
+        url: url
+      });
+      socket.on('connect', () => {
+        console.log('Socket connected');
+        socket.send('gameButtonFold', {protocol: 3,  data:{
+          playerID: aa[i],
+          playertable: 4,
+          playChannelName: tn,
+          session: ses
+        }});
+        // const channel = socket.subscribe("publicChannel"+tn);
+        // channel.watch((message) => {
+        //   console.log('publicChannel[' + aa[i] + ']', message);
+        // })
+        // const privateChannel = socket.subscribe('privateChannel'+aa[i])
+        // privateChannel.watch((message) => {
+        //   console.log('privateChannel[' + aa[i] + ']', message);
+        // })
+      })
+    }
+// ---  梭哈  -------------------------------------------------------
+ function buttonAllin(i){
+
+let socket = new ClusterWS({
+  url: url
+});
+socket.on('connect', () => {
+  console.log('Socket connected');
+  socket.send('gameButtonAllin', {protocol: 3,  data:{
+    playerID: aa[i],
+    playertable: 4,
+    playChannelName: tn,
+    session: ses
+  }});
+  const channel = socket.subscribe("publicChannel"+tn);
+  channel.watch((message) => {
+    console.log('publicChannel[' + aa[i] + ']', message);
+  })
+  const privateChannel = socket.subscribe('privateChannel'+aa[i])
+  privateChannel.watch((message) => {
+    console.log('privateChannel[' + aa[i] + ']', message);
+  })
+})
+}
+// ---  跟注  -------------------------------------------------------
+function buttonCall(i){
+
+  let socket = new ClusterWS({
+    url: url
+  });
+  socket.on('connect', () => {
+    console.log('Socket connected');
+    socket.send('gameButtonCall', {protocol: 3,  data:{
+      playerID: aa[i],
+      playertable: 4,
+      playChannelName: tn,
+      session: ses
+    }});
+    // const channel = socket.subscribe("publicChannel"+tn);
+    // channel.watch((message) => {
+    //   console.log('publicChannel' + aa[i], message);
+    // })
+    // const privateChannel = socket.subscribe('privateChannel'+aa[i])
+    // privateChannel.watch((message) => {
+    //   console.log('privateChannel' + aa[i], message);
+    // })
+  })
+}
+// ---  加注  -------------------------------------------------------
+function buttonRaise(i){
+const costBet = document.getElementById("raiseMoney").value;
+let socket = new ClusterWS({
+  url: url
+});
+socket.on('connect', () => {
+  console.log('Socket connected');
+  socket.send('gameButtonRaise', {protocol: 3,  data:{
+    playerID: aa[i],
+    playertable: 4,
+    costBet: costBet,
+    playChannelName: tn,
+    session: ses
+  }});
+  const channel = socket.subscribe("publicChannel"+tn);
+  channel.watch((message) => {
+    console.log('publicChannel' + aa[i], message);
+  })
+  const privateChannel = socket.subscribe('privateChannel'+aa[i])
+  privateChannel.watch((message) => {
+    console.log('privateChannel' + aa[i], message);
+  })
+})
+}
+
+// ---  Pass  -------------------------------------------------------
+function buttonPass(i){
+
+let socket = new ClusterWS({
+  url: url
+});
+socket.on('connect', () => {
+  console.log('Socket connected');
+  socket.send('gameButtonCheck', {protocol: 3,  data:{
+    playerID: aa[i],
+    playertable: 4,
+    costBet: 400,
+    playChannelName: tn,
+    session: ses
+  }});
+  const channel = socket.subscribe("publicChannel"+tn);
+  channel.watch((message) => {
+    console.log('publicChannel' + aa[i], message);
+  })
+  const privateChannel = socket.subscribe('privateChannel'+aa[i])
+  privateChannel.watch((message) => {
+    console.log('privateChannel' + aa[i], message);
+  })
+})
+}
+// ---  遊戲開始 Player1  -------------------------------------------------------
+    function gameStart(){
+      let socket = new ClusterWS({
+        url: url
+      });
+      for(let i = 0; i < aa.length; i++) {
+        socket.on('connect', () => {
+        console.log('Socket connected');
+        socket.send('gameStart', {protocol: 4,  data:{
+          playerID:aa[i],
+          playChannelName: tn,
+          session: ses
+        }});
+        // const publicChannel = socket.subscribe("publicChannel"+tn);
+        // publicChannel.watch((message) => {
+        //   console.log('publicChannel' + aa[i], message);
+        // })
+        // const privateChannel = socket.subscribe('privateChannel'+aa[i])
+        // privateChannel.watch((message) => {
+        //   console.log('privateChannel' + aa[i],message);
+        // })
+      })
+      }
+
+    }
+// ---  開桌  -------------------------------------------------------
+    function openTable(){
+      let socket = new ClusterWS({
+      // url: 'ws://192.168.10.101:3100'
+        url: url
+      });
+      socket.on('connect', () => {
+        socket.send('lobby_texas_event', {protocol: 'lobby_texas_protocol_openDesk',  data:{
+            memberId: 10974,
+            seat: 9,
+            tableTime: 8000,
+            smallBlind: 100,
+            bigBlind: 200,
+            minBet: 5000,
+            maxBet: 10000,
+            sec: 10,
+            multdeal: 0,
+            insurance: 1,
+            rake: 1,
+            toprake: 2,
+            buyin: 10,
+            gps: 0,
+            ip: 0,
+            type: 5,
+            tableName: 'test1',
+            nickName: 'test0'
+          }});
+          socket.on('lobby_texas_event', (data) => {
+            console.log(data);
+          });
+          const channel = socket.subscribe('publicAllTN1');
+          channel.watch((message) => {
+            console.log(message);
+          })
+      });
+    }
+// ---  取得所有牌桌列表  -------------------------------------------------------
+    function getAllDeskList(){
+      let socket = new ClusterWS({
+        url: url
+      });
+      socket.on('connect', () => {
+        console.log('Socket connected');
+        socket.send('lobby_texas_event', {data: {playerID: 90366},protocol: 'lobby_texas_protocol_randomDesk'});
+        socket.on('lobby_texas_event', (data) => {
+          console.log(data);
+        });
+        const channel = socket.subscribe('publicAllTN1');
+        channel.watch((message) => {
+          console.log(message);
+        }) 
+
+        // Publish any message you want
+        channel.publish('hi')
+      })
+    }
+// ---  離開座位  -------------------------------------------------------
+function buttonLeaveSeat(i){
+  let socket = new ClusterWS({
+    url: url
+  });
+  socket.on('connect', () => {
+    console.log('Socket connected');
+    socket.send('gameButtonLeaveSeat', {protocol: 3,  data:{
+      playerID: aa[i],
+      playChannelName: tn,
+      session: ses
+    }});
+    const channel = socket.subscribe("publicChannel"+tn);
+    channel.watch((message) => {
+      console.log(message);
+    })
+    // const privateChannel = socket.subscribe('privateChannel'+aa[i])
+    // privateChannel.watch((message) => {
+    //   console.log('privateChannel', message);
+    // })
+  })
+}
+
+  </script>
+</body>
+
+</html>

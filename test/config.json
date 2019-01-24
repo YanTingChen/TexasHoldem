@@ -1,0 +1,13 @@
+{
+    "reporterEnabled": "spec, mochawesome",
+    "mochawesomeReporterOptions": {
+        "reportDir": "",
+        "quiet": true,
+        "reportFilename": "apidoc",
+        "reportTitle": "APIDoc List",
+        "reportPageTitle": "APIDoc List",
+        "inlineAssets": true,
+        "overwrite": true,
+        "json": false
+    }
+}

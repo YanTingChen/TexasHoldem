@@ -1,0 +1,51 @@
+paths:
+  '/conflict':
+    post:
+      tags:
+        - conflict
+      summary: conflict
+      description: conflict
+      deprecated: false
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - reqData
+            properties:
+              reqData:
+                type: object
+                required:
+                  - searchFilter
+                properties:
+                  desk:
+                    description: '桌號'
+                    type: string
+                    default: 'CNN1'
+                    example: 'CNN1'
+      responses:
+        '200':
+          description: OK
+          schema:
+            required:
+              - status
+              - result
+            properties:
+              status:
+                type: integer
+                format: int32 
+                enum:
+                  - 1
+                  - 8001
+                default: 1
+                example: 1
+              result:
+                required:
+                  - msssage
+                properties:
+                    msssage:
+                      type: string
+                      example: 'success'
+                      default: 'success'
